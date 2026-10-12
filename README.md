@@ -52,5 +52,12 @@ Docker trains the model inside the image (`docker build -t heart-api:latest .`) 
 | 7 Kubernetes | `kubectl get deployments,pods,svc` and the `/predict` call |
 | 8 Monitoring | Prometheus `/targets` (UP) and the Grafana "Heart Disease API" dashboard |
 
+## Report
+```bash
+bash scripts/make_report.sh      # -> reports/MLOps_Assignment1_Report.docx (real metrics, EDA plots, architecture)
+```
+Save screenshots in `screenshots/` with these names and re-run to embed them automatically (missing ones become red placeholders):
+`01_mlflow_runs.png` `02_mlflow_run_detail.png` `03_github_actions.png` `04_docker_build_run.png` `05_k8s_deploy.png` `06_prometheus_targets.png` `07_grafana_dashboard.png` `08_train_output.png`
+
 ## Repo layout
 `src/` code - `tests/` pytest - `scripts/` automation - `k8s/` manifests - `monitoring/` Prometheus + Grafana - `notebooks/` - `data/` - `screenshots/` - `.github/workflows/ci.yml`

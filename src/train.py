@@ -44,7 +44,7 @@ def main() -> None:
         X, y, test_size=0.2, stratify=y, random_state=SEED)
     cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=SEED)
 
-    best_name, best_auc, best_model = None, -1.0, None
+    best_name, best_cv, best_test, best_model = None, -1.0, 0.0, None
     for name, (clf, grid) in CANDIDATES.items():
         pipe = Pipeline([("prep", build_preprocessor()), ("clf", clf)])
         with mlflow.start_run(run_name=name):
@@ -77,12 +77,16 @@ def main() -> None:
                 serialization_format=mlflow.sklearn.SERIALIZATION_FORMAT_CLOUDPICKLE)
             print(f"{name}: cv_auc={np.mean(cvres['test_roc_auc']):.3f} "
                   f"test_auc={test_auc:.3f}")
-            if test_auc > best_auc:
-                best_name, best_auc, best_model = name, test_auc, model
+            cv_auc = float(np.mean(cvres["test_roc_auc"]))
+            # select on cross-validation AUC; the test set is reported only
+            if cv_auc > best_cv:
+                best_name, best_cv, best_test, best_model = (
+                    name, cv_auc, test_auc, model)
 
     joblib.dump(best_model, os.path.join(MODEL_DIR, "model.joblib"))
     with open(os.path.join(MODEL_DIR, "metadata.json"), "w") as f:
-        json.dump({"model": best_name, "test_roc_auc": best_auc}, f)
+        json.dump({"model": best_name, "cv_roc_auc": best_cv,
+                   "test_roc_auc": best_test}, f)
     print(f"Saved best model: {best_name}")
 
 
