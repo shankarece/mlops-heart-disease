@@ -9,3 +9,8 @@ notebooks
 screenshots
 __pycache__
 *.pyc
+logs
+reports
+scripts
+monitoring
+k8s

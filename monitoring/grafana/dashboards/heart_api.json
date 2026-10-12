@@ -1,0 +1,26 @@
+{
+  "title": "Heart Disease API",
+  "uid": "heart-api",
+  "schemaVersion": 39,
+  "version": 1,
+  "refresh": "10s",
+  "time": {"from": "now-15m", "to": "now"},
+  "panels": [
+    {"id": 1, "type": "stat", "title": "Total predictions",
+     "gridPos": {"x": 0, "y": 0, "w": 6, "h": 5},
+     "datasource": {"type": "prometheus", "uid": "prometheus"},
+     "targets": [{"expr": "sum(predict_requests_total)", "refId": "A"}]},
+    {"id": 2, "type": "stat", "title": "Errors",
+     "gridPos": {"x": 6, "y": 0, "w": 6, "h": 5},
+     "datasource": {"type": "prometheus", "uid": "prometheus"},
+     "targets": [{"expr": "sum(predict_requests_total{status=\"error\"}) or vector(0)", "refId": "A"}]},
+    {"id": 3, "type": "timeseries", "title": "Request rate (per second)",
+     "gridPos": {"x": 0, "y": 5, "w": 12, "h": 8},
+     "datasource": {"type": "prometheus", "uid": "prometheus"},
+     "targets": [{"expr": "sum by (status) (rate(predict_requests_total[1m]))", "refId": "A"}]},
+    {"id": 4, "type": "timeseries", "title": "Latency p95 (seconds)",
+     "gridPos": {"x": 12, "y": 5, "w": 12, "h": 8},
+     "datasource": {"type": "prometheus", "uid": "prometheus"},
+     "targets": [{"expr": "histogram_quantile(0.95, sum by (le) (rate(predict_latency_seconds_bucket[1m])))", "refId": "A"}]}
+  ]
+}

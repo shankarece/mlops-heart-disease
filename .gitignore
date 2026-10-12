@@ -9,3 +9,5 @@ mlflow.db
 data/raw/
 models/*.joblib
 models/metadata.json
+logs/
+reports/eda/
