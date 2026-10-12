@@ -72,7 +72,9 @@ def main() -> None:
                 plt.close()
                 mlflow.log_artifact(plot)
                 os.remove(plot)
-            mlflow.sklearn.log_model(model, "model")
+            mlflow.sklearn.log_model(
+                model, "model",
+                serialization_format=mlflow.sklearn.SERIALIZATION_FORMAT_CLOUDPICKLE)
             print(f"{name}: cv_auc={np.mean(cvres['test_roc_auc']):.3f} "
                   f"test_auc={test_auc:.3f}")
             if test_auc > best_auc:

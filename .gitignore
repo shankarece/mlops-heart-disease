@@ -7,3 +7,5 @@ mlruns/
 mlflow.db
 .DS_Store
 data/raw/
+models/*.joblib
+models/metadata.json
