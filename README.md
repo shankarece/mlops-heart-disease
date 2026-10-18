@@ -10,6 +10,7 @@ cd mlops-heart-disease
 bash scripts/run_all.sh          # checks, install, data, EDA, train, lint, tests, docker build/run, API smoke test
 bash scripts/monitoring_up.sh    # Prometheus + Grafana with a ready dashboard, sends traffic, verifies
 bash scripts/k8s_deploy.sh       # Minikube deploy + smoke test (Kubernetes)
+bash scripts/api_demo.sh         # prints docker ps + /health + /predict (Docker screenshot)
 ```
 Every script stops with a clear `ERROR:` message on failure and writes a log to `logs/`.
 Use `bash scripts/run_all.sh --skip-docker` to run everything except the Docker steps.
