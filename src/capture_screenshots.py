@@ -234,6 +234,7 @@ def shot_mlflow(browser):
         return
     try:
         base = f"http://127.0.0.1:{MLFLOW_PORT}/#/experiments/{exp.experiment_id}"
+
         def show_metrics(page):
             page.get_by_text("Show more columns").first.click(timeout=4000)
             page.wait_for_timeout(2500)
