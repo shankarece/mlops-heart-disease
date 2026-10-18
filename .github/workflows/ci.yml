@@ -5,6 +5,9 @@ on:
     branches: [main]
   pull_request:
 
+permissions:
+  contents: write
+
 jobs:
   build-test-train:
     runs-on: ubuntu-latest
@@ -31,6 +34,27 @@ jobs:
       - name: Unit tests
         run: pytest -v --junitxml=test-results.xml
 
+      - name: Build assignment report (.docx)
+        if: github.event_name == 'push'
+        run: |
+          pip install -q -r requirements-report.txt
+          python -m src.eda
+          MLFLOW_DISABLE_AGENT_HINT=1 MLFLOW_DISABLE_TELEMETRY=true python -m src.make_report
+
+      - name: Publish report to branch report-output
+        if: github.event_name == 'push'
+        run: |
+          mkdir -p /tmp/out && cp reports/MLOps_Assignment1_Report.docx /tmp/out/
+          git config user.name "github-actions"
+          git config user.email "actions@users.noreply.github.com"
+          git checkout --orphan report-output
+          git rm -rf -q .
+          cp /tmp/out/MLOps_Assignment1_Report.docx .
+          git add MLOps_Assignment1_Report.docx
+          git commit -q -m "Report built by CI"
+          git push -f origin report-output
+          git checkout -q -f "$GITHUB_SHA"
+
       - name: Build Docker image
         run: docker build -t heart-api:ci .
 
@@ -43,3 +67,4 @@ jobs:
             test-results.xml
             models/
             data/heart_clean.csv
+            reports/MLOps_Assignment1_Report.docx
