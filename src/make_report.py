@@ -274,8 +274,9 @@ def main():
     p(doc, "Every training run is logged to MLflow under the experiment "
            "'heart-disease': best hyper-parameters, cross-validated metrics (accuracy, "
            "precision, recall, ROC-AUC), test ROC-AUC, the ROC curve and confusion "
-           f"matrix plots, and the fitted model. {len(all_runs)} runs are recorded in "
-           "total; the table above lists the latest run of each model.")
+           "matrix plots, and the fitted model. Each execution of the training script "
+           "adds one run per model, so repeated executions during development appear "
+           "as several runs; the table above lists the latest run of each model.")
     prm = [c for c in latest.columns if c.startswith("params.")]
     rows = []
     for _, r in latest.iterrows():
@@ -284,7 +285,9 @@ def main():
         name = r["tags.mlflow.runName"].replace("_", " ").title()
         rows.append([name, ", ".join(f"{k}={v}" for k, v in used.items())])
     table(doc, ["Run", "Best parameters"], rows)
-    shot(doc, "01_mlflow_runs.png", "Figure 6: MLflow runs table")
+    shot(doc, "01_mlflow_runs.png",
+         "Figure 6: MLflow comparison of the two models "
+         "(left column: random forest, right column: logistic regression)")
     shot(doc, "02_mlflow_run_detail.png", "Figure 7: MLflow run with parameters, metrics and plots")
 
     doc.add_heading("6. Model packaging and reproducibility", 1)
@@ -312,7 +315,9 @@ def main():
            "failure was visible in the run logs, was reproduced locally, fixed by "
            "saving the model in cloudpickle format, and the following runs passed. "
            "This is the kind of defect the pipeline exists to catch.")
-    shot(doc, "03_github_actions.png", "Figure 8: GitHub Actions run with artifacts")
+    shot(doc, "03_github_actions.png",
+         "Figure 8: GitHub Actions run history "
+         "(the latest runs pass; the first run failed and was fixed in run 2)")
 
     doc.add_heading("8. Containerisation", 1)
     p(doc, "The Dockerfile uses python:3.12-slim, installs requirements, copies the "
@@ -327,7 +332,8 @@ def main():
            "Python 3.12 with a newer scikit-learn, which made /predict return HTTP "
            "500 inside the container. Training inside the image removed this "
            "train/serve mismatch.")
-    shot(doc, "04_docker_build_run.png", "Figure 9: Docker build, run and /predict test")
+    shot(doc, "04_docker_build_run.png",
+         "Figure 9: Running containers with /health and /predict responses")
 
     doc.add_heading("9. Production deployment (Kubernetes)", 1)
     p(doc, "The API is deployed on a local Minikube cluster (Docker driver) using "
