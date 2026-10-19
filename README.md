@@ -60,5 +60,16 @@ bash scripts/make_report.sh      # -> reports/MLOps_Assignment1_Report.docx (rea
 Save screenshots in `screenshots/` with these names and re-run to embed them automatically (missing ones become red placeholders):
 `01_mlflow_runs.png` `02_mlflow_run_detail.png` `03_github_actions.png` `04_docker_build_run.png` `05_k8s_deploy.png` `06_prometheus_targets.png` `07_grafana_dashboard.png` `08_train_output.png`
 
+## Access / testing the API (no public URL)
+The API is deployed locally, not on a public cloud. To test it:
+```bash
+bash scripts/run_all.sh                 # builds and starts the container on http://localhost:8000
+curl localhost:8000/health
+curl -X POST localhost:8000/predict -H "Content-Type: application/json" -d @sample_input.json
+python -m src.predict sample_input.json # same model, command-line inference
+bash scripts/k8s_deploy.sh              # Kubernetes (Minikube); then: minikube service heart-api --url
+```
+Interactive API docs: http://localhost:8000/docs
+
 ## Repo layout
-`src/` code - `tests/` pytest - `scripts/` automation - `k8s/` manifests - `monitoring/` Prometheus + Grafana - `notebooks/` - `data/` - `screenshots/` - `.github/workflows/ci.yml`
+`src/` code - `tests/` pytest - `scripts/` automation - `k8s/` manifests - `monitoring/` Prometheus + Grafana - `data/` (cleaned dataset `heart_clean.csv`) - `screenshots/` - `.github/workflows/ci.yml`

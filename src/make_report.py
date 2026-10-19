@@ -344,6 +344,11 @@ def main():
            "rollout and verifies /health and /predict through the Service. On "
            "Minikube the LoadBalancer receives an external IP through 'minikube "
            "tunnel'.")
+    p(doc, "Access instructions: the API is not hosted on a public URL. For local "
+           "testing, run scripts/run_all.sh (container on http://localhost:8000, "
+           "interactive docs at /docs) or scripts/k8s_deploy.sh (Kubernetes, then "
+           "'minikube service heart-api --url'). The same model can also be scored "
+           "from the command line with 'python -m src.predict sample_input.json'.")
     shot(doc, "05_k8s_deploy.png", "Figure 10: Kubernetes rollout and resources")
 
     doc.add_heading("10. Monitoring and logging", 1)
